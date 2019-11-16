@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Cornell Aeriel Robotics Club
+Cornell Aerial Robotics Club
 
 This script is inteneded to run on start up on ARC's Raspberrypis. It will
 retrieve the internal IP adress of the pi, and email it, along with the name of
@@ -20,6 +20,7 @@ import argparse
 import socket
 import smtplib
 import ssl
+import time
 
 
 def main():
@@ -31,6 +32,8 @@ def main():
 
     parser.add_argument('pwd', help='Password for arc.pi.reg@gmail.com')
     args = parser.parse_args()
+
+    time.sleep(15)
 
     name = socket.gethostname()  # name of localhost
     addr = getIP()  # local IP address
