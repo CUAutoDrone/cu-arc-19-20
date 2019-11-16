@@ -2,71 +2,69 @@
 """
 Cornell Aerial Robotics Club
 
-This script is inteneded to run on start up on ARC's Raspberrypis. It will
-retrieve the internal IP adress of the pi, and email it, along with the name of
-the pi, to arc.pi.reg@gmail.com.
-
-The script piconnectlocal.py retrieves the information from this email and
-starts and SSH session with this Raspberry pi.
+Starts an SSH session with one of ARC's raspberry pis.
 
 Arguments:
-    pwd    Password for arc.pi.reg@gmail.com
+    usr    Username for the remote device.
+    pwd    Password for arc.pi.reg@gmail.com.
 
 date: 2019-11-08
 author: Eric Jackson
 email: ebj29-at-cornell-dot-edu
 """
+
 import argparse
-import socket
-import smtplib
-import ssl
-import time
+import imaplib
+import os
 
 
 def main():
-    parser = argparse.ArgumentParser(description=""" This script is inteneded
-                                     to run on start up on ARC's Raspberrypis.
-                                     It will retrieve the internal IP adress of
-                                     the pi, and email it, along with the name
-                                     of the pi, to arc.pi.reg@gmail.com.""")
+    """ Starts an SSH session with one of ARC\'s Raspberry pis. """
+    parser = argparse.ArgumentParser(description="""Starts SSH session with one
+                                     of ARC\'s Raspberrypis.""")
 
-    parser.add_argument('pwd', help='Password for arc.pi.reg@gmail.com')
+    parser.add_argument('usr', help='Username for the remote device.')
+    parser.add_argument('pwd', help='Password for arc.pi.reg@gmail.com.')
+
     args = parser.parse_args()
 
-    time.sleep(15)
-
-    name = socket.gethostname()  # name of localhost
-    addr = getIP()  # local IP address
-
-    sendIP(name, args.pwd, addr)
+    address = get_IP(IP_list(args.pwd), args.usr)
+    os.system("ssh " + "pi" + "@" + address)
 
 
-def sendIP(name, pwd, addr):
+def IP_list(pwd):
+    """ Returns an array of (pi user, internal IP) duples.  """
+    # Connect to the gmail server.
+    mail = imaplib.IMAP4_SSL('imap.gmail.com')
+    mail.login('arc.pi.reg@gmail.com', pwd)
+
+    # get mail IDs.
+    mail.select('Inbox')
+    typ, data = mail.search(None, 'ALL')
+    mail_ids = data[0].decode()
+    id_list = mail_ids.split()
+
+    pi_ip = []
+
+    # More description here.
+    for id in id_list[::-1]:
+        typ, msg_data = mail.fetch(id, '(BODY.PEEK[TEXT])')
+        msg = msg_data[0][1].decode().strip()
+
+        name, addr = msg.split(" ")
+        pi_ip.append((name, addr))
+
+    return pi_ip
+
+
+def get_IP(lst, usr):
     """
-    Sends an email to arc.pi.reg@gmail.com of the format:
-        <name> <local IP address>
-
-    Parameters:
-        name    Name of this raspberry pi
-        pwd     Password for arc.pi.reg@gmail.com
-        addr    Devices local IP address
+    Returns the adress of the first element in the array with the
+    username usr.
     """
-    usr = "arc.pi.reg@gmail.com"
-    prt = 465
-
-    with smtplib.SMTP_SSL('smtp.gmail.com', prt) as server:
-        server.login(usr, pwd)
-        server.sendmail(usr, usr, name + " " + addr)
-        server.quit()
-
-
-def getIP():
-    """ Returns this device's local IP address. """
-    conn = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    conn.connect(("1.1.1.1", 1))
-    addr = conn.getsockname()[0]
-    conn.close()
-    return addr
+    for element in lst:
+        if element[0] == usr:
+            return element[1]
 
 
 if __name__ == '__main__':
