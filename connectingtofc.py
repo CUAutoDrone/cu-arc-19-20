@@ -3,7 +3,7 @@ from time import sleep
 
 def connecttoport(dport):
     """This function connect to the desired port"""
-    port= serial.Serial(dport,15200, timeout=1,write_timeout=1)
+    port= serial.Serial(dport,15200, timeout=1000, write_timeout=1000)
     print("Desired port is "+port.name)
     return port
 
