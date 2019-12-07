@@ -1,5 +1,6 @@
 import serial
 from time import sleep
+import struct
 
 def connecttoport(dport):
     """This function connect to the desired port"""
