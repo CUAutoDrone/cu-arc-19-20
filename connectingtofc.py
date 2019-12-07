@@ -26,7 +26,7 @@ def pack(channels):
     msgsum=0
     for i in message:
         msgsum+=i
-    cheksum = 0xfff-msgsum
+    checksum = 0xfff-msgsum
     message.append(checksum%256)
     message.append(checksum//256)
     return message
