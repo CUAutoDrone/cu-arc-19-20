@@ -33,7 +33,7 @@ def pack(channels):
 
 def test():
     channel = [1000]*14
-    port=connecttoport('ttyAMA0')
+    port=connecttoport('/dev/ttyAMA0')
     message = pack(channel)
     send(message, port)
 
