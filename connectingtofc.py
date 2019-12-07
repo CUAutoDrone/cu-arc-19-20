@@ -1,20 +1,20 @@
 import serial
 
 def connecttoport(dport):
-"""This function connect to the desired port"""
+    """This function connect to the desired port"""
     port= serial.Serial(dport,15200, timeout=1,write_timeout=1)
     print("Desired port is "+port.name)
     return port
 
 
 def send(dmsg, port):
-"""This function is what is used to send the final message. It takes the port
+    """This function is what is used to send the final message. It takes the port
     you want and the message as arguments."""
     port.write(dmsg)
 
 
 def pack(channels):
-"""This function packs the desired message in the ibus format. You give it the
+    """This function packs the desired message in the ibus format. You give it the
     values for all 14 channel in an array. Unused channels must be given the
     value 0x05DC"""
     message=[]
