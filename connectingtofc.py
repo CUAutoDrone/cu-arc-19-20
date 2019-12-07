@@ -1,4 +1,5 @@
 import serial
+from time import sleep
 
 def connecttoport(dport):
     """This function connect to the desired port"""
@@ -32,10 +33,11 @@ def pack(channels):
     return message
 
 def test():
-    channel = [1000]*14
-    port=connecttoport('/dev/ttyAMA0')
-    message = pack(channel)
-    send(message, port)
-
+    for i in range(2000):
+        channel = [1000]*14
+        port=connecttoport('/dev/ttyAMA0')
+        message = pack(channel)
+        send(message, port)
+        sleep(10)
 if __name__ == "__main__":
     test()
