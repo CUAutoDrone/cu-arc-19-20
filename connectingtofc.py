@@ -15,8 +15,7 @@ def pack(channels):
         message.append(channel//256)
     #begins the sum needed to create the checksum bytes Not use if this should be
     #0x4020 instead
-    msgsum=0x2040
-    #idk if this sum is correct
+    msgsum=0
     for i in message:
         msgsum+=i
     cheksum = 0xfff-msgsum
@@ -24,3 +23,4 @@ def pack(channels):
     message.appned(checksum//256)
 
 def test():
+    pass
