@@ -1,0 +1,98 @@
+<grip:Pipeline>
+  <sources>
+    <grip:MultiImageFile>
+      <property name="path[6]" value="C:\Users\kerit\ARC\pole - img\Transformer_and_power_poles_near_Manor_Farm,_Offchurch_-_geograph.org.uk_-_1568551.jpg"/>
+      <property name="path[3]" value="C:\Users\kerit\ARC\pole - img\Poles-Road-Hill.jpg"/>
+      <property name="path[0]" value="C:\Users\kerit\ARC\pole - img\b-electricity-a-20150618-870x570.jpg"/>
+      <property name="index" value="6"/>
+      <property name="numImages" value="7"/>
+      <property name="path[5]" value="C:\Users\kerit\ARC\pole - img\telephone-poles-field-old-retro-spring-37973242.jpg"/>
+      <property name="path[2]" value="C:\Users\kerit\ARC\pole - img\Electricity_pole_in_a_field_-_geograph.org.uk_-_193478.jpg"/>
+      <property name="path[4]" value="C:\Users\kerit\ARC\pole - img\power lines.jpg"/>
+      <property name="path[1]" value="C:\Users\kerit\ARC\pole - img\DSC00668.jpg"/>
+    </grip:MultiImageFile>
+  </sources>
+  <steps>
+    <grip:Step name="CV dilate">
+      <grip:Input step="0" socket="0"/>
+      <grip:Input step="0" socket="1"/>
+      <grip:Input step="0" socket="2"/>
+      <grip:Input step="0" socket="3">
+        <value>1.0</value>
+      </grip:Input>
+      <grip:Input step="0" socket="4">
+        <value>BORDER_CONSTANT</value>
+      </grip:Input>
+      <grip:Input step="0" socket="5"/>
+      <grip:Output step="0" socket="0" previewed="false"/>
+    </grip:Step>
+    <grip:Step name="CV Canny">
+      <grip:Input step="1" socket="0"/>
+      <grip:Input step="1" socket="1">
+        <value>40.0</value>
+      </grip:Input>
+      <grip:Input step="1" socket="2">
+        <value>5.0</value>
+      </grip:Input>
+      <grip:Input step="1" socket="3">
+        <value>3</value>
+      </grip:Input>
+      <grip:Input step="1" socket="4">
+        <value>false</value>
+      </grip:Input>
+      <grip:Output step="1" socket="0" previewed="false"/>
+    </grip:Step>
+    <grip:Step name="Find Lines">
+      <grip:Input step="2" socket="0"/>
+      <grip:Output step="2" socket="0" previewed="false"/>
+    </grip:Step>
+    <grip:Step name="Filter Lines">
+      <grip:Input step="3" socket="0"/>
+      <grip:Input step="3" socket="1">
+        <value>20.0</value>
+      </grip:Input>
+      <grip:Input step="3" socket="2">
+        <value>
+          <double>79.31654676258991</double>
+          <double>112.73037542662118</double>
+        </value>
+      </grip:Input>
+      <grip:Output step="3" socket="0" previewed="true"/>
+    </grip:Step>
+  </steps>
+  <connections>
+    <grip:Connection>
+      <grip:Output step="0" socket="0" previewed="false"/>
+      <grip:Input step="1" socket="0"/>
+    </grip:Connection>
+    <grip:Connection>
+      <grip:Output step="1" socket="0" previewed="false"/>
+      <grip:Input step="2" socket="0"/>
+    </grip:Connection>
+    <grip:Connection>
+      <grip:Output source="0" socket="0" previewed="true"/>
+      <grip:Input step="0" socket="0"/>
+    </grip:Connection>
+    <grip:Connection>
+      <grip:Output step="2" socket="0" previewed="false"/>
+      <grip:Input step="3" socket="0"/>
+    </grip:Connection>
+  </connections>
+  <settings>
+    <teamNumber>0</teamNumber>
+    <publishAddress>roboRIO-0-FRC.local</publishAddress>
+    <deployAddress>roboRIO-0-FRC.local</deployAddress>
+    <deployDir>/home/lvuser</deployDir>
+    <deployUser>lvuser</deployUser>
+    <deployJavaHome>/usr/local/frc/JRE/</deployJavaHome>
+    <deployJvmOptions>-Xmx50m -XX:-OmitStackTraceInFastThrow -XX:+HeapDumpOnOutOfMemoryError -XX:MaxNewSize=16m</deployJvmOptions>
+  </settings>
+  <codeGenerationSettings>
+    <language>Java</language>
+    <className>GripPipeline</className>
+    <implementWpilibPipeline>false</implementWpilibPipeline>
+    <saveDir>C:\Users\kerit\GRIP</saveDir>
+    <packageName></packageName>
+    <moduleName>grip</moduleName>
+  </codeGenerationSettings>
+</grip:Pipeline>
