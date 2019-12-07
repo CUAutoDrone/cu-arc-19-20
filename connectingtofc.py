@@ -30,7 +30,8 @@ def pack(channels):
     checksum = 0xfff-msgsum
     message.append(checksum%256)
     message.append(checksum//256)
-    return message
+
+    return list(map(lambda i :struct.pack(b'b',i),message))
 
 def test():
     for i in range(2000):
