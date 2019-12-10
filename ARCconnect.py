@@ -40,7 +40,7 @@ def IP_list(pwd):
 
     # get mail IDs.
     mail.select('Inbox')
-    typ, data = mail.search(None, 'ALL')
+    typ, data = mail.search(None, '(From "arc.pi.reg")')
     mail_ids = data[0].decode()
     id_list = mail_ids.split()
 
