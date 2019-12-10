@@ -4,7 +4,7 @@ import struct
 
 def connecttoport(dport):
     """This function connect to the desired port"""
-    port= serial.Serial(dport,15200, timeout=1000, write_timeout=1000)
+    port= serial.Serial(dport,15200, timeout=10, write_timeout=10)
     print("Desired port is "+port.name)
     return port
 
@@ -35,11 +35,14 @@ def pack(channels):
     return list(map(lambda i :struct.pack(b'B',i),message))
 
 def test():
+    port = serial.Serial('/dev/ttyAMA0',15200)
+    port.write(128)
     for i in range(2000):
         channel = [1000]*14
         port=connecttoport('/dev/ttyAMA0')
         message = pack(channel)
         send(message, port)
         sleep(10)
+
 if __name__ == "__main__":
     test()
