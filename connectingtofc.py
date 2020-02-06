@@ -20,20 +20,28 @@ def pack(channels):
     values for all 14 channel in an array. Unused channels must be given the
     value 0x05DC"""
     message=[]
+    #adds the required begining header of the message
     message.append(0x20)
     message.append(0x40)
+    #puts each channel value in little endian format in the message
     for channel in channels:
         message.append(channel%256)
         message.append(channel//256)
+    #calculates and ands the required cheksum
     msgsum=0
     for i in message:
         msgsum+=i
     checksum = 0xffff-msgsum
     message.append(checksum%256)
     message.append(checksum//256)
-
+    #ensures each of the two parts of each channel is 1 byte by converting it to
+    #a char
     return list(map(lambda i :struct.pack(b'B',i),message))
+
 def commands(channels):
+    """This function takes a list of values of max length 14 and sends it
+    in the correct form to the flight controller. Gives the neutral value of 0x05DC
+    (1500) to the unused channels"""
     command = []
     for i in channels:
         command.append(i)
@@ -41,6 +49,11 @@ def commands(channels):
     message = pack(command)
     with connecttoport('/dev/ttyS0') as port:
         send(message, port)
+def dronecontrol(roll, pitch, throttle, yaw):
+    """Master function which will let you asign the roll, pitch, throtle and yaw
+    values"""
+    values = [roll, pitch, throttle, yaw]
+    commands(values)
 def test():
     commands([1000]*4)
     # print("start")
