@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import serial
 from time import sleep
 import struct
@@ -46,6 +45,7 @@ def commands(channels):
     with connecttoport('/dev/ttyS0') as port:
         send(message, port)
 def test():
+    pass
     #commands([1000]*4)
     # print("start")
     # port = serial.Serial('/dev/ttyS0',115200, timeout=10, write_timeout=10 )
@@ -56,5 +56,7 @@ def test():
     # message = pack(channel)
     # for i in range(2000):
     #     send(message, port)
+
 if __name__ == "__main__":
     #test()
+    pass

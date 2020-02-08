@@ -14,6 +14,7 @@ yaw = 1500
 throttle = 885
 arming = 1500
 def constantsend():
+    """sends the desired values to the FC every 0.01 secconds"""
     while not kill:
         message=[roll,pitch,yaw,throttle,1500,arm]
         commands(message)
@@ -40,5 +41,7 @@ def stopsend():
     kill = True
 
 if __name__ == "__main__":
+#creating thread instance and starting it
     sendingthread = threading.Thread(target=constantsend())
     sendingthread.start()
+    stopsend()
