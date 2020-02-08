@@ -1,28 +1,44 @@
 import connectingtofc
+import threading
+import time
 
 """This file sets up the basic direction commands which will be needed to move
-   the drone."""
-"""Note: tests have to be done to figure out how exatly the flight controller
-   responds to the messages so that we can figure out if we need to keep on sending
-   it in a loop or for how long we need to do that"""
-def throttle(value):
-    """arguments given to this function must be from 0-(find)"""
-    desire = []
-    desire+= [0x05dc]*3
-    desire+= value
-    commands(desire)
-def pitch(value):
-    """1500 is the neutral value where the drone is level"""
-    desire = []
-    desire+= 0x05dc
-    desire+= value
-    commands(desire)
+   the drone. Creates a thread which constantly sends signals to the Flight
+   Controller every 0.01 seconds."""
+#lets you manually kill the thread if needed by making equal true
+kill = False
+#variables that control the drone
+roll = 1500
+pitch = 1500
+yaw = 1500
+throttle = 885
+arming = 1500
+def constantsend():
+    while not kill:
+        message=[roll,pitch,yaw,throttle,1500,arm]
+        commands(message)
+        time.sleep(0.01)
+        #add code which complies with messages from flight commands
+
 def roll(value):
-    """1500 is the neutral value where the drone is level"""
-    commands([value])
+    #code that aks thread to change roll
+    pass
+def pitch(value):
+    #code that asks thread to change pitch
+    pass
 def yaw(value):
-    """1500 is the neutral value where the drone is level"""
-    desire = []
-    desire+= [0x05dc]*2
-    desire+= value
-    commands(desire)
+    #code that tells thread to changes yaw
+    pass
+def throttle(value):
+    #put code that tells thread to change throttle
+    pass
+def arm():
+    #code that arms
+    pass
+def stopsend():
+    """function which stops the thread if needed"""
+    kill = True
+
+if __name__ == "__main__":
+    sendingthread = threading.Thread(target=constantsend())
+    sendingthread.start()
