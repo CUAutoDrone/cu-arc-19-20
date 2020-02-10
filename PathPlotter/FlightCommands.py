@@ -5,7 +5,7 @@ import time
 """This file sets up the basic direction commands which will be needed to move
    the drone. Creates a thread which constantly sends signals to the Flight
    Controller every 0.01 seconds."""
-#lets you manually kill the thread if needed by making equal true
+#lets you manually kill the thread if needed by making true
 kill = False
 #variables that control the drone
 roll = 1500
@@ -41,7 +41,7 @@ def stopsend():
     kill = True
 
 if __name__ == "__main__":
-#creating thread instance and starting it
+    #creating thread instance and starting it
     sendingthread = threading.Thread(target=constantsend())
     sendingthread.start()
     stopsend()

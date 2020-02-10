@@ -2,10 +2,14 @@ import serial
 from time import sleep
 import struct
 
+"""variable which tells if we have already connected to the serial port"""
+connected = False
+
 def connecttoport(dport):
     """This function connect to the desired port"""
     port= serial.Serial(dport,115200, timeout=10, write_timeout=10)
     print("Desired port is "+port.name)
+    connected = True
     return port
 
 
@@ -42,8 +46,13 @@ def commands(channels):
         command.append(i)
     command+=([0x05dc]*(14-len(channels)))
     message = pack(command)
-    with connecttoport('/dev/ttyS0') as port:
-        send(message, port)
+    # with connecttoport('/dev/ttyS0') as port:
+    #     send(message, port)
+    if connected:
+        send(message, '/dev/ttyS0')
+    else:
+        send(message, connecttoport('/dev/ttyS0'))
+        
 def test():
     pass
     #commands([1000]*4)
