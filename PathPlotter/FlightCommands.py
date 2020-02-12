@@ -1,6 +1,5 @@
-import connectingtofc
 import threading
-import time
+from time import sleep
 """this library allows you to send messages between threads. We are trying to
    avoid the threads looking at the same variable in in memory so this miight be
    a solution"""
@@ -39,7 +38,7 @@ def constantsend():
                 arm = 1500
         message=[roll,pitch,yaw,throttle,1500,arm]
         commands(message)
-        time.sleep(0.01)
+        sleep(0.01)
     print("Ending sending thread")
         #add code which complies with messages from flight commands
 
@@ -63,4 +62,5 @@ if __name__ == "__main__":
     #creating thread instance and starting it
     sendingthread = threading.Thread(target=constantsend())
     sendingthread.start()
+    time.sleep(6)
     stopsend()

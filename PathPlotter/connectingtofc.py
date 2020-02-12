@@ -1,5 +1,4 @@
 import serial
-from time import sleep
 import struct
 
 """variable which tells if we have already connected to the serial port"""
@@ -52,7 +51,7 @@ def commands(channels):
         send(message, '/dev/ttyS0')
     else:
         send(message, connecttoport('/dev/ttyS0'))
-        
+
 def test():
     pass
     #commands([1000]*4)
