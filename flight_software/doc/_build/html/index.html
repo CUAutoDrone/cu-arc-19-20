@@ -1,0 +1,262 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Welcome to flight_software’s documentation! &#8212; Flight Software 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-flight_software.flightcontroller">
+<span id="welcome-to-flight-software-s-documentation"></span><h1>Welcome to flight_software’s documentation!<a class="headerlink" href="#module-flight_software.flightcontroller" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="flight_software.flightcontroller.FlightController">
+<em class="property">class </em><code class="sig-prename descclassname">flight_software.flightcontroller.</code><code class="sig-name descname">FlightController</code><span class="sig-paren">(</span><em class="sig-param">port='/dev/ttyS0'</em>, <em class="sig-param">baudrate=115200</em>, <em class="sig-param">timeout=1</em><span class="sig-paren">)</span><a class="headerlink" href="#flight_software.flightcontroller.FlightController" title="Permalink to this definition">¶</a></dt>
+<dd><p>Representation of the flight controller.</p>
+<dl class="attribute">
+<dt id="flight_software.flightcontroller.FlightController.connection">
+<code class="sig-name descname">connection</code><a class="headerlink" href="#flight_software.flightcontroller.FlightController.connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>The serial connection to the flight controller. None until initialized.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>serial.Serial</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="flight_software.flightcontroller.FlightController.port">
+<code class="sig-name descname">port</code><a class="headerlink" href="#flight_software.flightcontroller.FlightController.port" title="Permalink to this definition">¶</a></dt>
+<dd><p>The port of the serial conection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="flight_software.flightcontroller.FlightController.baudrate">
+<code class="sig-name descname">baudrate</code><a class="headerlink" href="#flight_software.flightcontroller.FlightController.baudrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>The baudrate of the serial connection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="flight_software.flightcontroller.FlightController.timeout">
+<code class="sig-name descname">timeout</code><a class="headerlink" href="#flight_software.flightcontroller.FlightController.timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>The maximum alowable time in seconds to wait for a message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="flight_software.flightcontroller.FlightController.position">
+<code class="sig-name descname">position</code><a class="headerlink" href="#flight_software.flightcontroller.FlightController.position" title="Permalink to this definition">¶</a></dt>
+<dd><p>The current position of the drone relative to the start position (or to
+the last zeroed postion).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>(float, float, float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="flight_software.flightcontroller.FlightController.armed">
+<code class="sig-name descname">armed</code><a class="headerlink" href="#flight_software.flightcontroller.FlightController.armed" title="Permalink to this definition">¶</a></dt>
+<dd><p>The arm status of the flight controller.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="flight_software.flightcontroller.FlightController.thrust">
+<code class="sig-name descname">thrust</code><a class="headerlink" href="#flight_software.flightcontroller.FlightController.thrust" title="Permalink to this definition">¶</a></dt>
+<dd><p>The current value of the thrust signal being sent to the drone.
+In range (0, 100)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="flight_software.flightcontroller.FlightController.pitch">
+<code class="sig-name descname">pitch</code><a class="headerlink" href="#flight_software.flightcontroller.FlightController.pitch" title="Permalink to this definition">¶</a></dt>
+<dd><p>The current value of the pitch signal being sent to the drone.
+In range (-100, 100)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="flight_software.flightcontroller.FlightController.roll">
+<code class="sig-name descname">roll</code><a class="headerlink" href="#flight_software.flightcontroller.FlightController.roll" title="Permalink to this definition">¶</a></dt>
+<dd><p>The current value of the roll signal being sent to the drone.
+In range (-100, 100)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="flight_software.flightcontroller.FlightController.yaw">
+<code class="sig-name descname">yaw</code><a class="headerlink" href="#flight_software.flightcontroller.FlightController.yaw" title="Permalink to this definition">¶</a></dt>
+<dd><p>The current value of the yaw signal being sent to the drone.
+In range (-100, 100)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flight_software.flightcontroller.FlightController.commands">
+<code class="sig-name descname">commands</code><span class="sig-paren">(</span><em class="sig-param">channels</em><span class="sig-paren">)</span><a class="headerlink" href="#flight_software.flightcontroller.FlightController.commands" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function takes a list of values of max length 14 and sends it
+in the correct form to the flight controller. Gives the neutral value of
+0x05DC (1500) to the unused channels.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="flight_software.flightcontroller.FlightController.connect">
+<code class="sig-name descname">connect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flight_software.flightcontroller.FlightController.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect to the flight controller, and start signal loop thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>SerialException</strong> – Raised when the connection fails</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="flight_software.flightcontroller.FlightController.disconnect">
+<code class="sig-name descname">disconnect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#flight_software.flightcontroller.FlightController.disconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disconnect from the flight controller and end signal loop thread.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="flight_software.flightcontroller.FlightController.dronecontrol">
+<code class="sig-name descname">dronecontrol</code><span class="sig-paren">(</span><em class="sig-param">pitch</em>, <em class="sig-param">throttle</em>, <em class="sig-param">yaw</em><span class="sig-paren">)</span><a class="headerlink" href="#flight_software.flightcontroller.FlightController.dronecontrol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Master function which will let you asign the roll, pitch, throttle
+and yaw values.</p>
+</dd></dl>
+
+</dd></dl>
+
+<div class="toctree-wrapper compound">
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">Flight Software</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, ARC.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
