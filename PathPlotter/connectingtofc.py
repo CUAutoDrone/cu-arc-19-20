@@ -35,7 +35,7 @@ def pack(channels):
     message.append(checksum%256)
     message.append(checksum//256)
 
-    return list(map(lambda i :struct.pack(b'B',i),message))
+    return message #list(map(lambda i :struct.pack(b'B',i),message))
 def commands(channels):
     """This function will take any amount of channels given and both pack and send
     the message to the flight controller. Values given must still be given in the

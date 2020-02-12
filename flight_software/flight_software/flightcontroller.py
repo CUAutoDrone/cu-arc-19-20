@@ -31,8 +31,8 @@ class FlightController:
     armed : bool
         The arm status of the flight controller.
 
-    thrust : float
-        The current value of the thrust signal being sent to the drone.
+    throttle : float
+        The current value of the throttle signal being sent to the drone.
         In range (0, 100)
 
     pitch : float
@@ -60,46 +60,39 @@ class FlightController:
         self.position = (0,0,0)
 
         self.armed = False
-        self.thrust = 0
+        self.throttle = 0
         self.pitch = 0
         self.roll = 0
         self.yaw = 0
 
 
-    def signal_loop(self):
-        if self.connection:
-            self.send(_pack([
-                self.pitch,
-                self.roll,
-                self.yaw,
-                self.throttle,
-                0x05DC,
-                1900 if self.armed else 1500
-            ]))
-            sleep(0.01)
-            self.signal_loop()
+    @staticmethod
+    def pack(channels):
+        """Pack message in iBus protocol.
 
-
-    def connect(self):
-        """Connect to the flight controller, and start signal loop thread.
-
-        Raises
-        ------
-        SerialException
-            Raised when the connection fails
+        Parameters
+        ----------
+        channels : short array
         """
-        self.connection = serial.Serial(self.port,
-                                        self.baudrate,
-                                        timeout=self.timeout)
+        message=[]
 
-        sig = Thread(target=signal_loop)
-        sig.start()
+        #add the header of the message
+        message.append(0x20)
+        message.append(0x40)
 
+        #put each channel value in little endian format in the message
+        for channel in channels:
+            message.append(channel % 256)
+            message.append(channel // 256)
 
-    def disconnect(self):
-        """Disconnect from the flight controller and end signal loop thread.
-        """
-        self.connection = None
+        #pad message to required size
+        message += [220, 5] * (14 - len(channels))
+
+        #calculate and add checksum
+        checksum = 0xFFFF - sum(message)
+        message.append(checksum % 256)
+        message.append(checksum // 256)
+        return message
 
 
     def send(self, msg):
@@ -121,38 +114,53 @@ class FlightController:
             raise ValueError("no connection")
 
 
-    @staticmethod
-    def _pack(self, channels):
-        """Pack message in iBus protocol.
+    def signal_loop(self):
+        while self.connection:
+            self.send(self.pack([
+                self.pitch,
+                self.roll,
+                self.yaw,
+                self.throttle,
+                1500,
+                1900 if self.armed else 1500
+            ]))
+            sleep(0.01)
 
-        Parameters
-        ----------
-        channels : short array
+
+    def connect(self):
+        """Connect to the flight controller, and start signal loop thread.
+
+        Raises
+        ------
+        SerialException
+            Raised when the connection fails
         """
-        message=[]
+        if not self.connection:
+            self.connection = serial.Serial(self.port,
+                                            self.baudrate,
+                                            timeout=self.timeout)
 
-        #add the header of the message
-        message.append(0x20)
-        message.append(0x40)
+            sig = Thread(target=self.signal_loop)
+            sig.start()
 
-        #put each channel value in little endian format in the message
-        for channel in channels:
-            message.append(channel % 256)
-            message.append(channel // 256)
+    def arm(self):
+        self.armed = True
 
-        #pad message to required size
-        message += [0x05DC] * (14 - len(channels))
 
-        #calculate and add cheksum
-        checksum = 0xFFFF - sum(message)
-        message.append(checksum % 256)
-        message.append(checksum // 256)
+    def disarm(self):
+        self.armed = False
 
-        return message
+
+    def disconnect(self):
+        """Disconnect from the flight controller and end signal loop thread.
+        """
+        self.connection = None
 
 
 def _test():
-    pass
+    fc = FlightController()
+    fc.connect()
+    fc.arm = True
 
 
 if __name__ == "__main__":
