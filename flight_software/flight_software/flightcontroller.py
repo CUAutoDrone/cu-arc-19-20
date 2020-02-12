@@ -151,47 +151,8 @@ class FlightController:
         return message
 
 
-    def commands(port, channels):
-        """This function takes a list of values of max length 14 and sends it
-        in the correct form to the flight controller. Gives the neutral value of
-        0x05DC (1500) to the unused channels.
-        """
-        command = []
-
-        # Add each given channel to the message.
-        for i in channels:
-            command.append(i)
-
-        # Fill the remaining channels with 0x05DC (1500).
-        command += ([0x05DC] * (14-len(channels)))
-
-        # Pack the command into an IBUS message.
-        message = pack(command)
-
-        # Send the message to the specified port.
-        send(message, port)
-
-
-    def dronecontrol(roll, pitch, throttle, yaw):
-        """Master function which will let you asign the roll, pitch, throttle
-        and yaw values.
-        """
-        values = [roll, pitch, throttle, yaw]
-        commands(values)
-
-
 def _test():
-    with connecttoport('/dev/ttyS0') as port:
-        commands(port, [1000]*4)
-    # print("start")
-    # port = serial.Serial('/dev/ttyS0',115200, timeout=10, write_timeout=10 )
-    # port.write(struct.pack(b'B',128))
-    # print("end")
-    # port=connecttoport('/dev/ttyS0')
-    # channel = [1000]*14
-    # message = pack(channel)
-    # for i in range(2000):
-    #     send(message, port)
+    pass
 
 
 if __name__ == "__main__":
