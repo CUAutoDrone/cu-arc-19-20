@@ -1,28 +1,55 @@
+import threading
 import connectingtofc
+from time import sleep
 
 """This file sets up the basic direction commands which will be needed to move
-   the drone."""
-"""Note: tests have to be done to figure out how exatly the flight controller
-   responds to the messages so that we can figure out if we need to keep on sending
-   it in a loop or for how long we need to do that"""
-def throttle(value):
-    """arguments given to this function must be from 0-(find)"""
-    desire = []
-    desire+= [0x05dc]*3
-    desire+= value
-    commands(desire)
-def pitch(value):
-    """1500 is the neutral value where the drone is level"""
-    desire = []
-    desire+= 0x05dc
-    desire+= value
-    commands(desire)
+   the drone. Creates a thread which constantly sends signals to the Flight
+   Controller every 0.01 seconds."""
+#lets you manually kill the thread if needed by making true
+kill = False
+#variables that control the drone
+roll = 1500
+pitch = 1500
+yaw = 1500
+throttle = 885
+arming = 1500
+
+def constantsend():
+    """sends the desired values to the FC every 0.01 secconds"""
+    while not kill:
+        message=[roll,pitch,yaw,throttle,1500,arm]
+        connectingtofc.commands(message)
+        sleep(0.01)
+    print("Ending sending thread")
+        #add code which complies with messages from flight commands
+
 def roll(value):
-    """1500 is the neutral value where the drone is level"""
-    commands([value])
+    roll = value
+def pitch(value):
+    pitch = value
 def yaw(value):
-    """1500 is the neutral value where the drone is level"""
-    desire = []
-    desire+= [0x05dc]*2
-    desire+= value
-    commands(desire)
+    yaw = value
+def throttle(value):
+    throttle = value
+def arm():
+    arm = 1900
+def dissarm():
+    arm = 1500
+def stopsend():
+    """function which stops the thread if needed"""
+    kill = True
+
+if __name__ == "__main__":
+    #creating thread instance and starting it
+    sendingthread = threading.Thread(target=constantsend)
+    sendingthread.start()
+    dissarm()
+    sleep(2)
+    arm()
+    sleep(2)
+    throttle(1500)
+    sleep(2)
+    throttle(885)
+    sleep(1)
+    dissarm()
+    stopsend()
