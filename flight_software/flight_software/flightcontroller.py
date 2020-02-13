@@ -28,6 +28,10 @@ class FlightController:
         The current position of the drone relative to the start position (or to
         the last zeroed postion).
 
+    waypoint : (float, float, float)
+        The target position of the drone relative to the start position (or to
+        the last zeroed postion).
+
     armed : bool
         The arm status of the flight controller.
 
@@ -49,6 +53,7 @@ class FlightController:
 
     """
 
+
     def __init__(self, port='/dev/ttyS0', baudrate=115200, timeout=1):
         """Constructor method
         """
@@ -57,7 +62,8 @@ class FlightController:
         self.baudrate = baudrate
         self.timeout = timeout
 
-        self.position = (0,0,0)
+        self.position = (0, 0, 0)
+        self.waypoint = (0, 0, 0)
 
         self.armed = False
         self.throttle = 0
@@ -92,7 +98,8 @@ class FlightController:
         checksum = 0xFFFF - sum(message)
         message.append(checksum % 256)
         message.append(checksum // 256)
-        return message
+
+        return list(map(lambda i :struct.pack(b'B',i),message))
 
 
     def send(self, msg):
@@ -127,8 +134,21 @@ class FlightController:
             sleep(0.01)
 
 
+    def position_loop(self):
+        while self.connection:
+            (x, y, z) = self.position
+
+            #TODO: update position with sensor data
+            self.position = (
+                x,
+                y,
+                z
+            )
+
+
     def connect(self):
-        """Connect to the flight controller, and start signal loop thread.
+        """Connect to the flight controller and start signal loop and position
+        calculation threads.
 
         Raises
         ------
@@ -140,14 +160,36 @@ class FlightController:
                                             self.baudrate,
                                             timeout=self.timeout)
 
-            sig = Thread(target=self.signal_loop)
-            sig.start()
+            Thread(target=self.signal_loop).start()
+            Thread(target=self.position_loop).start()
+
 
     def arm(self):
+        """Arm the drone.
+        """
         self.armed = True
 
 
+    def set_waypoint(x, y, z):
+        """ Set the target position of the drone in meters offset from start.
+
+        Parameters
+        ----------
+        x : float
+            The x-coordinate of the target position.
+
+        y : float
+            The y-coordinate of the target position.
+
+        z : float
+            The z-coordinate of the target position.
+        """
+        self.waypoint = (x, y, z)
+
+
     def disarm(self):
+        """Disarm the drone.
+        """
         self.armed = False
 
 
@@ -159,8 +201,18 @@ class FlightController:
 
 def _test():
     fc = FlightController()
+
     fc.connect()
-    fc.arm = True
+    sleep(1)
+    fc.arm()
+    sleep(1)
+    fc.throttle = 1000
+    sleep(1)
+    fc.throttle = 0
+    sleep(1)
+    fc.disarm()
+    sleep(1)
+    fc.disconnect()
 
 
 if __name__ == "__main__":
