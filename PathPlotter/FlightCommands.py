@@ -16,27 +16,40 @@ arming = 1500
 
 def constantsend():
     """sends the desired values to the FC every 0.01 secconds"""
+    global kill
+    global roll
+    global pitch
+    global yaw
+    global throttle
+    global arming
     while not kill:
-        message=[roll,pitch,yaw,throttle,1500,arm]
+        message=[roll,pitch,yaw,throttle,1500,arming]
         connectingtofc.commands(message)
         sleep(0.01)
     print("Ending sending thread")
         #add code which complies with messages from flight commands
 
-def roll(value):
+def setroll(value):
+    global roll
     roll = value
-def pitch(value):
+def setpitch(value):
+    global pitch
     pitch = value
-def yaw(value):
+def setyaw(value):
+    global yaw
     yaw = value
-def throttle(value):
+def setthrottle(value):
+    global throttle
     throttle = value
 def arm():
-    arm = 1900
+    global arming
+    arming = 1900
 def dissarm():
-    arm = 1500
+    global arming
+    arming = 1500
 def stopsend():
     """function which stops the thread if needed"""
+    global kill
     kill = True
 
 if __name__ == "__main__":
@@ -47,9 +60,9 @@ if __name__ == "__main__":
     sleep(2)
     arm()
     sleep(2)
-    throttle(1500)
+    setthrottle(1500)
     sleep(2)
-    throttle(885)
+    setthrottle(885)
     sleep(1)
     dissarm()
     stopsend()

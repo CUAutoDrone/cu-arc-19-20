@@ -160,7 +160,7 @@ class FlightController:
             self.connection = serial.Serial(
                 self.port,
                 self.baudrate,
-                timeout=self.timeou
+                timeout=self.timeout
             )
 
             Thread(target=self.signal_loop).start()

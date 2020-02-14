@@ -3,12 +3,13 @@ from time import sleep
 import struct
 
 """variable which tells if we have already connected to the serial port"""
-connected = False
+connected = None
 def connecttoport(dport):
+    global connected
     """This function connect to the desired port"""
     port= serial.Serial(dport,115200, timeout=10, write_timeout=10)
     print("Desired port is "+port.name)
-    connected = True
+    connected = port
     return port
 
 
@@ -45,6 +46,7 @@ def commands(channels):
     """This function will take any amount of channels given and both pack and send
     the message to the flight controller. Values given must still be given in the
     order of the channels"""
+    global connected
     command = []
     for i in channels:
         command.append(i)
@@ -53,22 +55,21 @@ def commands(channels):
     # with connecttoport('/dev/ttyS0') as port:
     #     send(message, port)
     if connected:
-        send(message, '/dev/ttyS0')
+        send(message, connected)
     else:
         send(message, connecttoport('/dev/ttyS0'))
 
 def test():
-    pass
-    #commands([1000]*4)
-    # print("start")
-    # port = serial.Serial('/dev/ttyS0',115200, timeout=10, write_timeout=10 )
-    # port.write(struct.pack(b'B',128))
-    # print("end")
-    # port=connecttoport('/dev/ttyS0')
-    # channel = [1000]*14
-    # message = pack(channel)
-    # for i in range(2000):
-    #     send(message, port)
+    commands([1000]*4)
+    print("start")
+    port = serial.Serial('/dev/ttyS0',115200, timeout=10, write_timeout=10 )
+    port.write(struct.pack(b'B',128))
+    print("end")
+    port=connecttoport('/dev/ttyS0')
+    channel = [1000]*14
+    message = pack(channel)
+    for i in range(2000):
+        send(message, port)
     #disarmed
     # for i in range(100):
     #     commands([1500, 1500, 1500, 885, 1500, 1500])
@@ -95,5 +96,4 @@ def test():
     #     sleep(0.01)
 
 if __name__ == "__main__":
-    #test()
-    pass
+    test()
