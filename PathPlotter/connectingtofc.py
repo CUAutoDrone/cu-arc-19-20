@@ -1,4 +1,5 @@
 import serial
+from time import sleep
 import struct
 from time import sleep
 
@@ -25,24 +26,30 @@ def pack(channels):
     values for all 14 channel in an array. Unused channels must be given the
     value 0x05DC"""
     message=[]
+
+    #adds the required begining header of the message
     message.append(0x20)
     message.append(0x40)
+    #puts each channel value in little endian format in the message
     for channel in channels:
         message.append(channel%256)
         message.append(channel//256)
+    #calculates and ands the required cheksum
     msgsum=0
     for i in message:
         msgsum+=i
     checksum = 0xffff-msgsum
     message.append(checksum%256)
     message.append(checksum//256)
-
+    #ensures each of the two parts of each channel is 1 byte by converting it to
+    #a char
     return message #list(map(lambda i :struct.pack(b'B',i),message))
 def commands(channels):
     global connected
     """This function will take any amount of channels given and both pack and send
     the message to the flight controller. Values given must still be given in the
     order of the channels"""
+    global connected
     command = []
     for i in channels:
         command.append(i)
