@@ -67,9 +67,9 @@ class FlightController:
 
         self.armed = False
         self.throttle = 0
-        self.pitch = 0
-        self.roll = 0
-        self.yaw = 0
+        self.pitch = 1500
+        self.roll = 1500
+        self.yaw = 1500
 
 
     @staticmethod
@@ -99,7 +99,7 @@ class FlightController:
         message.append(checksum % 256)
         message.append(checksum // 256)
 
-        return list(map(lambda i :struct.pack(b'B',i),message))
+        return message
 
 
     def send(self, msg):
@@ -144,6 +144,7 @@ class FlightController:
                 y,
                 z
             )
+            sleep(0.01)
 
 
     def connect(self):
@@ -156,9 +157,11 @@ class FlightController:
             Raised when the connection fails
         """
         if not self.connection:
-            self.connection = serial.Serial(self.port,
-                                            self.baudrate,
-                                            timeout=self.timeout)
+            self.connection = serial.Serial(
+                self.port,
+                self.baudrate,
+                timeout=self.timeou
+            )
 
             Thread(target=self.signal_loop).start()
             Thread(target=self.position_loop).start()
