@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import serial
-import struct
 from time import sleep
 from threading import Thread
 
@@ -22,7 +21,7 @@ class Drone:
         The baudrate of the serial connection.
 
     timeout : int
-        The maximum alowable time in seconds to wait for a message.
+        The maximum allowable time in seconds to wait for a message.
 
     position : (float, float, float)
         The current position of the drone relative to the start position (or to
@@ -36,20 +35,20 @@ class Drone:
         The arm status of the flight controller.
 
     throttle : float
-        The current value of the throttle signal being sent to the drone.
-        In range (0, 100)
+        The current value of the throttle signal being sent to the flight
+        controller. In range (0, 100)
 
     pitch : float
-        The current value of the pitch signal being sent to the drone.
-        In range (-100, 100)
+        The current value of the pitch signal being sent to the flight
+        controller. In range (-100, 100)
 
     roll : float
-        The current value of the roll signal being sent to the drone.
-        In range (-100, 100)
+        The current value of the roll signal being sent to the flight
+        controller. In range (-100, 100)
 
     yaw : float
-        The current value of the yaw signal being sent to the drone.
-        In range (-100, 100)
+        The current value of the yaw signal being sent to the flight
+        controller. In range (-100, 100)
 
     """
 
@@ -199,7 +198,9 @@ class Drone:
     def disconnect(self):
         """Disconnect from the flight controller and end signal loop thread.
         """
-        self.connection = None
+        if self.connection:
+            self.connection.close()
+            self.connection = None
 
 
 def _test():
