@@ -2,7 +2,7 @@ import getdist
 from threading import Thread
 from time import sleep
 
- class SensorSuite:
+class SensorSuite:
     """This is a class that will get all the sensor information that we need
     """
 
