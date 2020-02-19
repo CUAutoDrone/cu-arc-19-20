@@ -1,4 +1,4 @@
-import getdist
+from getdist import measure
 from threading import Thread
 from time import sleep
 
@@ -18,7 +18,7 @@ class SensorSuite:
         self.z = measure()
         sleep(0.01)
 
-    def connnect(self):
+    def connect(self):
         Thread(target=self.ultrasonic).start()
 
 def test():

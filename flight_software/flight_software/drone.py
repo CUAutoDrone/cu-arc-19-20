@@ -78,6 +78,10 @@ class Drone:
         Parameters
         ----------
         channels : short array
+
+        Requires
+        --------
+        channels has length strictly less than 15.
         """
         message=[]
 
