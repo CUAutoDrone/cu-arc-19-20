@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from sensorsuite import SensorSuite
 import serial
-from time import sleep
+from time import sleep, time
 from threading import Thread
 
 class Drone:
@@ -69,6 +70,9 @@ class Drone:
         self.pitch = 1500
         self.roll = 1500
         self.yaw = 1500
+
+        self.sensor_suite = SensorSuite()
+        self.sensor_suite.connect()
 
 
     @staticmethod
@@ -139,14 +143,7 @@ class Drone:
 
     def position_loop(self):
         while self.connection:
-            (x, y, z) = self.position
-
-            #TODO: update position with sensor data
-            self.position = (
-                x,
-                y,
-                z
-            )
+            self.position = self.sensor_suite.get_position()
             sleep(0.01)
 
 
@@ -203,24 +200,34 @@ class Drone:
         """Disconnect from the flight controller and end signal loop thread.
         """
         if self.connection:
-            self.connection.close()
+            c = self.connection
             self.connection = None
+            sleep(0.1)
+            c.close()
 
 
 def _test():
-    fc = Drone()
+    d = Drone()
+    d.connect()
 
-    fc.connect()
-    sleep(1)
-    fc.arm()
-    sleep(1)
-    fc.throttle = 1000
-    sleep(1)
-    fc.throttle = 0
-    sleep(1)
-    fc.disarm()
-    sleep(1)
-    fc.disconnect()
+    # sleep(1)
+    # d.arm()
+    # sleep(1)
+    # d.throttle = 1000
+    # sleep(1)
+    # d.throttle = 0
+    # sleep(1)
+    # d.disarm()
+    # sleep(1)
+    # d.disconnect()
+
+    t = time()
+    while time() - t < 5:
+        print(d.position)
+        sleep(1)
+
+    d.sensor_suite.disconnect()
+    d.disconnect()
 
 
 if __name__ == "__main__":
