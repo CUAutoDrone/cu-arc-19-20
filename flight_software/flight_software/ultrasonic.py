@@ -3,7 +3,7 @@ import RPi.GPIO as GPIO
 
 class Ultrasonic:
 
-    MS_TO_M = 17150
+    MS_TO_CM = 17150
 
     def __init__(self):
         GPIO.setmode(GPIO.BOARD)
@@ -36,7 +36,7 @@ class Ultrasonic:
         GPIO.setup(self.pin, GPIO.OUT)
         GPIO.output(self.pin, False)
 
-        return elapsed * Ultrasonic.MS_TO_M
+        return elapsed * Ultrasonic.MS_TO_CM
 
 
     def disconnect(self):
