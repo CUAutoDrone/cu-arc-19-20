@@ -71,8 +71,7 @@ class Drone:
         self.roll = 1500
         self.yaw = 1500
 
-        self.sensor_suite = SensorSuite()
-        self.sensor_suite.connect()
+        self.sensor_suite = None
 
 
     @staticmethod
@@ -142,7 +141,7 @@ class Drone:
 
 
     def position_loop(self):
-        while self.connection:
+        while self.sensor_suite:
             self.position = self.sensor_suite.get_position()
             sleep(0.01)
 
@@ -164,6 +163,11 @@ class Drone:
             )
 
             Thread(target=self.signal_loop).start()
+            
+        if not self.sensor_suite:
+            self.sensor_suite = SensorSuite()
+            self.sensor_suite.connect()
+
             Thread(target=self.position_loop).start()
 
 
@@ -207,28 +211,19 @@ class Drone:
 
 
 def _test():
-    d = Drone()
-    d.connect()
+    try:
+        d = Drone()
+        d.connect()
 
-    # sleep(1)
-    # d.arm()
-    # sleep(1)
-    # d.throttle = 1000
-    # sleep(1)
-    # d.throttle = 0
-    # sleep(1)
-    # d.disarm()
-    # sleep(1)
-    # d.disconnect()
+        t = time()
+        while time() - t < 5:
+            print(d.position)
+            sleep(1)
 
-    t = time()
-    while time() - t < 5:
-        print(d.position)
-        sleep(1)
-
-    d.sensor_suite.disconnect()
-    d.disconnect()
-
+        d.sensor_suite.disconnect()
+        d.disconnect()
+    except KeyboardInterrupt:
+        d.sensor_suite.disconnect
 
 if __name__ == "__main__":
     _test()

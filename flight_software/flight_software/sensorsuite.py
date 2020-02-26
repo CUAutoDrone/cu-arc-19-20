@@ -1,4 +1,4 @@
-from getdist import measure
+from ultrasonic import Ultrasonic
 from threading import Thread
 from time import sleep
 import RPi.GPIO as GPIO
@@ -14,31 +14,42 @@ class SensorSuite:
         self.y = 0
         self.z = 0
 
+        self.ultrasonic = None
+
+
     def get_position(self):
         return (self.x, self.y, self.z)
 
-    def ultrasonic(self):
-        while self.connected:
-            self.z = measure()
+
+    def update_z(self):
+        while self.ultrasonic:
+            self.z = self.ultrasonic.measure()
             sleep(0.01)
+
 
     def connect(self):
         self.connected = True
-        Thread(target=self.ultrasonic).start()
+        self.ultrasonic = Ultrasonic()
+
+        Thread(target=self.update_z).start()
+
 
     def disconnect(self):
         self.connected = False
-        GPIO.cleanup()
+
+        self.ultrasonic.disconnect()
+        self.ultrasonic = None
+
 
 def test():
-    di = SensorSuite()
-    di.connect()
-    try:
-        while True:
-            print(di.z)
-            sleep(1)
-    except KeyboardInterrupt:
-        di.connected = False
+    s = SensorSuite()
+    s.connect()
+
+    for i in range(10):
+        print(s.get_position())
+        sleep(0.1)
+
+    s.disconnect()
 
 if __name__ == "__main__":
     test()
