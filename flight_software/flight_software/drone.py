@@ -5,6 +5,7 @@ from sensorsuite import SensorSuite
 import serial
 from time import sleep, time
 from threading import Thread
+from operator import add, sub
 
 class Drone:
     """Representation of the drone.
@@ -23,10 +24,6 @@ class Drone:
 
     timeout : int
         The maximum allowable time in seconds to wait for a message.
-
-    position : (float, float, float)
-        The current position of the drone relative to the start position (or to
-        the last zeroed postion).
 
     waypoint : (float, float, float)
         The target position of the drone relative to the start position (or to
@@ -62,7 +59,6 @@ class Drone:
         self.baudrate = baudrate
         self.timeout = timeout
 
-        self.position = (0, 0, 0)
         self.waypoint = (0, 0, 0)
 
         self.armed = False
@@ -71,7 +67,7 @@ class Drone:
         self.roll = 1500
         self.yaw = 1500
 
-        self.sensor_suite = None
+        self.sensors = None
 
 
     @staticmethod
@@ -141,8 +137,26 @@ class Drone:
 
 
     def position_loop(self):
-        while self.sensor_suite:
-            self.position = self.sensor_suite.get_position()
+        bound = lambda n, l, u : l if n < l else u if n > u else n
+        p = (0, 0, 1)
+        i = (0, 0, 0)
+        i_state = (0, 0, 0)
+        d = (0, 0, 0)
+        old_error = (0, 0, 0)
+
+        while self.connection:
+            #TODO: pid loop to hold waypoint.
+            error = tuple(map(sub, self.waypoint, self.sensors.get_position()))
+            bounded_error = tuple(map(lambda x : bound(x, -1000, 1000), error))
+
+            self.throttle = int(max(sum([
+                p[2] * error[2],
+                i[2] * i_state[2],
+                d[2] * (error[2] - old_error[2])
+            ]), 0))
+
+            i_state = tuple(map(add, i_state, bounded_error))
+            old_error = error
             sleep(0.01)
 
 
@@ -163,10 +177,10 @@ class Drone:
             )
 
             Thread(target=self.signal_loop).start()
-            
-        if not self.sensor_suite:
-            self.sensor_suite = SensorSuite()
-            self.sensor_suite.connect()
+
+        if not self.sensors:
+            self.sensors = SensorSuite()
+            self.sensors.connect()
 
             Thread(target=self.position_loop).start()
 
@@ -177,7 +191,7 @@ class Drone:
         self.armed = True
 
 
-    def set_waypoint(x, y, z):
+    def set_waypoint(self, x, y, z):
         """ Set the target position of the drone in meters offset from start.
 
         Parameters
@@ -207,6 +221,7 @@ class Drone:
             c = self.connection
             self.connection = None
             sleep(0.1)
+            self.sensors.disconnect()
             c.close()
 
 
@@ -215,15 +230,20 @@ def _test():
         d = Drone()
         d.connect()
 
-        t = time()
-        while time() - t < 5:
-            print(d.position)
+        for i in range(5):
+            print(d.sensors.get_position(), d.throttle)
             sleep(1)
 
-        d.sensor_suite.disconnect()
+        d.set_waypoint(0, 0, 100)
+
+        for i in range(5):
+            print(d.sensors.get_position(), d.throttle)
+            sleep(1)
+
         d.disconnect()
+
     except KeyboardInterrupt:
-        d.sensor_suite.disconnect
+        d.disconnect()
 
 if __name__ == "__main__":
     _test()

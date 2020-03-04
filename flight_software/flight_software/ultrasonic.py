@@ -1,4 +1,5 @@
-from time import time, sleep
+from time import sleep
+from time import perf_counter as time # i don't actually know if this is better
 import RPi.GPIO as GPIO
 
 class Ultrasonic:

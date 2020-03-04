@@ -22,7 +22,7 @@ class SensorSuite:
 
 
     def update_z(self):
-        while self.ultrasonic:
+        while self.connected:
             self.z = self.ultrasonic.measure()
             sleep(0.01)
 
@@ -36,6 +36,7 @@ class SensorSuite:
 
     def disconnect(self):
         self.connected = False
+        sleep(0.1)
 
         self.ultrasonic.disconnect()
         self.ultrasonic = None
