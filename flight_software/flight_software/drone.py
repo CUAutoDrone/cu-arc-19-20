@@ -139,7 +139,7 @@ class Drone:
     def position_loop(self):
         bound = lambda n, l, u : l if n < l else u if n > u else n
         p = (0, 0, 1)
-        i = (0, 0, 0)
+        i = (0, 0, 0.1)
         i_state = (0, 0, 0)
         d = (0, 0, 0)
         old_error = (0, 0, 0)
@@ -149,11 +149,11 @@ class Drone:
             error = tuple(map(sub, self.waypoint, self.sensors.get_position()))
             bounded_error = tuple(map(lambda x : bound(x, -1000, 1000), error))
 
-            self.throttle = int(max(sum([
+            self.throttle = int(min(max(sum([
                 p[2] * error[2],
                 i[2] * i_state[2],
                 d[2] * (error[2] - old_error[2])
-            ]), 0))
+            ]), 0), 2000))
 
             i_state = tuple(map(add, i_state, bounded_error))
             old_error = error
@@ -230,17 +230,11 @@ def _test():
         d = Drone()
         d.connect()
 
-        for i in range(5):
+        d.set_waypoint(0, 0, 80)
+
+        while True:
             print(d.sensors.get_position(), d.throttle)
             sleep(1)
-
-        d.set_waypoint(0, 0, 100)
-
-        for i in range(5):
-            print(d.sensors.get_position(), d.throttle)
-            sleep(1)
-
-        d.disconnect()
 
     except KeyboardInterrupt:
         d.disconnect()
